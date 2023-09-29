@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Course List</h2>
+<h3>current competition courses</h3>
+
+<!-- code to display list of courses-->
+<table>
+    <tr>
+        <th>Course</th>
+        <th>Name</th>
+        <th>Map diagram</th>
+    </tr>
+    {% for course in course_list %}
+        <tr>
+            {% for field in course %}
+                <td>{{field}}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
