@@ -1,11 +1,10 @@
-
-<!DOCTYPE html>
-<html>
-    <!-- access Plotly content delivery network (CDN) charting library -->
+{% extends "base.html" %}
+{% block content %}
+<!-- driver_list is the variable passed in containing the list of drivers -->
+<!-- Add code to display a list of drivers -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-<body>
-    <h1>heading</h1>
+    <h2>heading</h2>
     <div id="myHBarPlot" style="width:100%; max-width:320px;"></div>
 
     <script>
@@ -20,8 +19,8 @@
         const data = [{ x: priceList,  y: fruitList,  type:"bar", orientation:"h", marker: {color:"pink"} }];
 
         // Define graph layout. Excluded a y-axis title as fruit names are self-explanatory.
-        const layout = {  
-            xaxis: {range: [0, 15], title: "cost"}, 
+        const layout = {
+            xaxis: {range: [0, 15], title: "cost"},
             title: "something"
         };
 
@@ -29,6 +28,4 @@
         Plotly.newPlot("myHBarPlot", data, layout);
 
     </script>
-
-</body>
-</html>
+{% endblock %}
