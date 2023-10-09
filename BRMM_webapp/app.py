@@ -36,17 +36,17 @@ def adminview():
     return render_template("adminview.html")
 
 
-@app.route("/listjuniordrivers")
+@app.route("/adminview/listjuniordrivers")
 def listjuniordrivers():
     return render_template("listjuniordrivers.html")
 
 
-@app.route("/driversearch")
+@app.route("/adminview/driversearch")
 def driversearch():
     return render_template("driversearch.html")
 
 
-@app.route("/editruns")
+@app.route("/adminview/editruns")
 def editruns():
     return render_template("editruns.html")
 
