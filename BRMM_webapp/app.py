@@ -9,6 +9,15 @@ import mysql.connector
 from mysql.connector import FieldType
 import connect
 
+"""
+Tasks:
+1. Formatting
+2. Naming
+3. SQL structure
+4. Web structure
+5. Code structure
+"""
+
 app = Flask(__name__)
 
 dbconn = None
@@ -67,6 +76,9 @@ def listdrivers():
 
 @app.route('/driversrundetails/<int:driver_id>', methods=['GET'])
 def driversrundetailspage(driver_id):
+    """
+    :param driver_id: Driver's ID to display information about
+    """
     connection = getCursor()
     connection.execute("SELECT * FROM driver;")
     driverList = connection.fetchall()
@@ -89,6 +101,11 @@ def driversrundetailspage(driver_id):
 
 @app.route('/driversrundetails', methods=['GET', 'POST'])
 def driversrundetails():
+    """
+    A driver's name is selected from a drop-down list of drivers to display a
+    page showing the driver's run details and run totals, including the course names (but not the
+    course ID letter). Include the driver ID and names, and car model and drive class, as headings.
+    """
     connection = getCursor()
     connection.execute("SELECT * FROM driver;")
     driverList = connection.fetchall()
@@ -119,7 +136,7 @@ def showgraph():
     # Use that to construct 2 lists: bestDriverList containing the names, resultsList containing the final result values
     # Names should include their ID and a trailing space, eg '133 Oliver Ngatai '
 
-    return render_template("top5graph.html")  #, name_list=bestDriverList, value_list=resultsList)
+    return render_template("top5graph.html")  # , name_list=bestDriverList, value_list=resultsList)
 
 
 if __name__ == '__main__':
