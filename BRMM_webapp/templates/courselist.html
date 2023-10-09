@@ -2,22 +2,34 @@
 {% block content %}
 
 <h2>Course List</h2>
-<h3>current competition courses</h3>
+<h3>Current competition courses</h3>
 
-<!-- code to display list of courses-->
-<table>
-    <tr>
-        <th>Course</th>
-        <th>Name</th>
-        <th>Map diagram</th>
-    </tr>
-    {% for course in course_list %}
-        <tr>
-            {% for field in course %}
-                <td>{{field}}</td>
+<!-- Code to display list of courses -->
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Course</th>
+                <th>Name</th>
+                <th>Map diagram</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for course in course_list %}
+                <tr>
+                    {% for field in course %}
+                        {% if loop.index0 == 2 %}
+                            <td>
+                                <img src="static/{{ field }}" alt="Course Map" class="img-fluid" style="max-width: 100%; height: auto;">
+                            </td>
+                        {% else %}
+                            <td class="align-middle">{{ field }}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
             {% endfor %}
-        </tr>
-    {% endfor %}
-</table>
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}
