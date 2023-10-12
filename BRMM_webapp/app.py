@@ -24,6 +24,29 @@ dbconn = None
 connection = None
 
 
+def total_time_sort_key(item):
+    total_time = item[1]['total_time']
+    if total_time == "Not Qualified":
+        return float('inf')  # Put "Not Qualified" entries at the bottom
+    return float(total_time)
+
+def calculate_run_total_time(cones_hit: int | None, wd: int | None, second: int | None) -> int | None:
+    """
+    Each run total is the driver's time in seconds plus any cone/wrong direction penalties (5 seconds per cone hit, 10 seconds for a WD).
+    :param cones_hit: Number of cones hits in one run
+    :param wd: If wrong direction ever happens
+    :param second: real course times
+    :return: course time after penalties. Return None if not finished.
+    """
+    cones_hit_penalties = cones_hit if cones_hit else 0 * 5
+    wd_penalties = wd if wd else 0 * 10
+    try:
+        return second + cones_hit_penalties + wd_penalties
+    except TypeError:
+
+        return None
+
+
 def getCursor():
     global dbconn
     global connection
@@ -62,7 +85,84 @@ def editruns():
 
 @app.route("/overallresults")
 def overallresults():
-    return render_template("overallresults.html")
+    """
+    Show the overall results in a table, from best to worst overall result, and with any NQ results at the bottom (at
+    the bottom of the list or as a note below the table). The table will include the driver ID and names (including
+    '(J)' for juniors), and car model. Display all 6 course times for each driver, as well as their overall result.
+    The winner should display “cup” next to their result, and the next 4 display “prize” (just the text is fine,
+    or optionally suitable alternative symbols).
+    """
+
+    def process_overall_results(results):
+        """
+        Take a list of overall results from SQL and calculate total time.
+        :param results: i.e. [(137, 'Celeste', 'Daniel', 'RWD', 'Camaro', 1, None, 0, None)]
+        :return: user_dict["driver ID"]
+            {
+                "surname": surname,
+                "first_name": first_name,
+                "junior": caregiver,
+                "drive_class": drive_class,
+                "model": model,
+                "courses": {"course name": results},
+                "total_time": total_time
+            }
+        """
+        user_dict = {}
+        for result in results:
+            new_record = calculate_run_total_time(result[7], result[8], result[9])
+            if result[0] not in user_dict.keys():
+                # Create a new record for new driver
+                user_dict[result[0]] = {
+                    "surname": result[1],
+                    "first_name": result[2],
+                    "junior": result[3],
+                    "drive_class": result[4],
+                    "model": result[5],
+                    "courses": {result[6]: new_record}
+                }
+            else:
+                # Add new course record for old driver if possible, and check best of two
+                if result[5] in user_dict[result[0]]["courses"].keys():
+                    # Check if new record is better than exist one
+                    if not user_dict[result[0]]["courses"][result[6]]:
+                        user_dict[result[0]]["courses"][result[6]] = new_record
+                    elif new_record:
+                        user_dict[result[0]]["courses"][result[6]] = min(new_record,
+                                                                         user_dict[result[0]]["courses"][result[6]])
+                else:
+                    # Add new course record
+                    user_dict[result[0]]["courses"][result[6]] = new_record
+
+        # Calculate total run time
+        for user in user_dict.keys():
+            try:
+                user_dict[user]["total_time"] = sum([value for value in user_dict[user]["courses"].values()])
+            except TypeError:
+                user_dict[user]["total_time"] = "Not Qualified"
+
+        user_dict = sorted(user_dict.items(), key=total_time_sort_key)
+        return user_dict
+
+    connection = getCursor()
+
+    # Query the database to get overall results, including driver details and course times
+    connection.execute("SELECT d.driver_id, d.surname, d.first_name, d.caregiver, "
+                       "c.drive_class, c.model, s.name, "
+                       "r.cones, r.wd, r.seconds "
+                       "FROM motorkhana.driver as d "
+                       "INNER JOIN motorkhana.car as c ON c.car_num = d.car "
+                       "INNER JOIN motorkhana.run as r ON r.dr_id = d.driver_id "
+                       "INNER JOIN motorkhana.course as s ON r.crs_id = s.course_id "
+                       "ORDER BY s.name;")
+
+    overall_results = process_overall_results(connection.fetchall())
+
+    # Get list of course for display
+    connection.execute("SELECT name FROM motorkhana.course ORDER BY name;")
+    course_names = connection.fetchall()
+    course_names = [row[0] for row in course_names]
+    return render_template("overallresults.html", overall_results=overall_results, course_names=course_names)
 
 
 @app.route("/listdrivers")
@@ -88,7 +188,6 @@ def driversrundetailspage(driver_id):
     connection = getCursor()
     connection.execute("SELECT * FROM driver;")
     driverList = connection.fetchall()
-
 
     """
     TODO: Might be better to handle time calculation etc in python instead of using SQL or frontend.
