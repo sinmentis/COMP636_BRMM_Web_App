@@ -1,36 +1,35 @@
 <!-- TODO: Describe what does this file do and how -->
 <!-- TODO: filename reformat with _. -->
-<!-- TODO: Implementation -->
-<!-- TODO: Investigate why loading time is slow for graph -->
 
 {% extends "base.html" %}
 {% block content %}
-<!-- driver_list is the variable passed in containing the list of drivers -->
-<!-- Add code to display a list of drivers -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-    <h2>heading</h2>
-    <div id="myHBarPlot" style="width:100%; max-width:320px;"></div>
+    <h2>Top 5 Drivers</h2>
+    <div id="myHBarPlot" style="width:100%; max-width:800px;"></div>
 
     <script>
-        // Note SPACE after each fruit name so gap before horizontal bars
-        const priceList = [7.25,8.50,3.45];
-        const fruitList = ['apple ','mango ','banana '];
-        // REPLACE constants above with passed in variables.
-        // Use the '|safe' Jinja filter to mark them as safe (prevents your data being html-escaped). eg,
-        // var myList = {{ list_from_py | safe }}
+        const driver_names = {{ driver_names | safe }};
+        const overall_results = {{ overall_results | safe }};
 
-        // Define graph data
-        const data = [{ x: priceList,  y: fruitList,  type:"bar", orientation:"h", marker: {color:"pink"} }];
+        const data = [
+            {
+                y: driver_names.map(name => name + ' '),
+                x: overall_results,
+                type: "bar",
+                orientation: "h",
+                marker: { color: "dodgerblue" },
+                textposition: 'outside'
+            }
+        ];
 
-        // Define graph layout. Excluded a y-axis title as fruit names are self-explanatory.
         const layout = {
-            xaxis: {range: [0, 15], title: "cost"},
-            title: "something"
+            yaxis: { autorange: 'reversed', automargin: true },
+            xaxis: { title: "Overall Result (s)" },
+            title: "Top 5 Drivers"
         };
 
-        // Display using Plotly
         Plotly.newPlot("myHBarPlot", data, layout);
-
     </script>
 {% endblock %}
+

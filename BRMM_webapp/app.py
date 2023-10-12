@@ -30,6 +30,7 @@ def total_time_sort_key(item):
         return float('inf')  # Put "Not Qualified" entries at the bottom
     return float(total_time)
 
+
 def calculate_run_total_time(cones_hit: int | None, wd: int | None, second: int | None) -> int | None:
     """
     Each run total is the driver's time in seconds plus any cone/wrong direction penalties (5 seconds per cone hit, 10 seconds for a WD).
@@ -45,6 +46,58 @@ def calculate_run_total_time(cones_hit: int | None, wd: int | None, second: int 
     except TypeError:
 
         return None
+
+
+def process_overall_results(results):
+    """
+    Take a list of overall results from SQL and calculate total time.
+    :param results: i.e. [(137, 'Celeste', 'Daniel', 'RWD', 'Camaro', 1, None, 0, None)]
+    :return: user_dict["driver ID"]
+        {
+            "surname": surname,
+            "first_name": first_name,
+            "junior": caregiver,
+            "drive_class": drive_class,
+            "model": model,
+            "courses": {"course name": results},
+            "total_time": total_time
+        }
+    """
+    user_dict = {}
+    for result in results:
+        new_record = calculate_run_total_time(result[7], result[8], result[9])
+        if result[0] not in user_dict.keys():
+            # Create a new record for new driver
+            user_dict[result[0]] = {
+                "surname": result[1],
+                "first_name": result[2],
+                "junior": result[3],
+                "drive_class": result[4],
+                "model": result[5],
+                "courses": {result[6]: new_record}
+            }
+        else:
+            # Add new course record for old driver if possible, and check best of two
+            if result[5] in user_dict[result[0]]["courses"].keys():
+                # Check if new record is better than exist one
+                if not user_dict[result[0]]["courses"][result[6]]:
+                    user_dict[result[0]]["courses"][result[6]] = new_record
+                elif new_record:
+                    user_dict[result[0]]["courses"][result[6]] = min(new_record,
+                                                                     user_dict[result[0]]["courses"][result[6]])
+            else:
+                # Add new course record
+                user_dict[result[0]]["courses"][result[6]] = new_record
+
+    # Calculate total run time
+    for user in user_dict.keys():
+        try:
+            user_dict[user]["total_time"] = sum([value for value in user_dict[user]["courses"].values()])
+        except TypeError:
+            user_dict[user]["total_time"] = "Not Qualified"
+
+    user_dict = sorted(user_dict.items(), key=total_time_sort_key)
+    return user_dict
 
 
 def getCursor():
@@ -92,58 +145,6 @@ def overallresults():
     The winner should display “cup” next to their result, and the next 4 display “prize” (just the text is fine,
     or optionally suitable alternative symbols).
     """
-
-    def process_overall_results(results):
-        """
-        Take a list of overall results from SQL and calculate total time.
-        :param results: i.e. [(137, 'Celeste', 'Daniel', 'RWD', 'Camaro', 1, None, 0, None)]
-        :return: user_dict["driver ID"]
-            {
-                "surname": surname,
-                "first_name": first_name,
-                "junior": caregiver,
-                "drive_class": drive_class,
-                "model": model,
-                "courses": {"course name": results},
-                "total_time": total_time
-            }
-        """
-        user_dict = {}
-        for result in results:
-            new_record = calculate_run_total_time(result[7], result[8], result[9])
-            if result[0] not in user_dict.keys():
-                # Create a new record for new driver
-                user_dict[result[0]] = {
-                    "surname": result[1],
-                    "first_name": result[2],
-                    "junior": result[3],
-                    "drive_class": result[4],
-                    "model": result[5],
-                    "courses": {result[6]: new_record}
-                }
-            else:
-                # Add new course record for old driver if possible, and check best of two
-                if result[5] in user_dict[result[0]]["courses"].keys():
-                    # Check if new record is better than exist one
-                    if not user_dict[result[0]]["courses"][result[6]]:
-                        user_dict[result[0]]["courses"][result[6]] = new_record
-                    elif new_record:
-                        user_dict[result[0]]["courses"][result[6]] = min(new_record,
-                                                                         user_dict[result[0]]["courses"][result[6]])
-                else:
-                    # Add new course record
-                    user_dict[result[0]]["courses"][result[6]] = new_record
-
-        # Calculate total run time
-        for user in user_dict.keys():
-            try:
-                user_dict[user]["total_time"] = sum([value for value in user_dict[user]["courses"].values()])
-            except TypeError:
-                user_dict[user]["total_time"] = "Not Qualified"
-
-        user_dict = sorted(user_dict.items(), key=total_time_sort_key)
-        return user_dict
-
     connection = getCursor()
 
     # Query the database to get overall results, including driver details and course times
@@ -240,12 +241,29 @@ def listcourses():
 
 @app.route("/showgraph")
 def showgraph():
+    """
+    Bar graph: Display a horizontal bar graph of the top 5 drivers overall. using driver names and overall results as
+    passed variables instead of hard-coded constants.
+    """
     connection = getCursor()
-    # Insert code to get top 5 drivers overall, ordered by their final results.
-    # Use that to construct 2 lists: bestDriverList containing the names, resultsList containing the final result values
-    # Names should include their ID and a trailing space, eg '133 Oliver Ngatai '
 
-    return render_template("top5graph.html")  # , name_list=bestDriverList, value_list=resultsList)
+    # Query the database to get overall results, including driver details and course times
+    connection.execute("SELECT d.driver_id, d.surname, d.first_name, d.caregiver, "
+                       "c.drive_class, c.model, s.name, "
+                       "r.cones, r.wd, r.seconds "
+                       "FROM motorkhana.driver as d "
+                       "INNER JOIN motorkhana.car as c ON c.car_num = d.car "
+                       "INNER JOIN motorkhana.run as r ON r.dr_id = d.driver_id "
+                       "INNER JOIN motorkhana.course as s ON r.crs_id = s.course_id "
+                       "ORDER BY s.name;")
+
+    overall_results = process_overall_results(connection.fetchall())[:5]
+
+    # Extract driver names and overall results
+    driver_names = [f"{driver[1]['surname']} {driver[1]['first_name']}" for driver in overall_results]
+    overall_results = [driver[1]['total_time'] for driver in overall_results]
+
+    return render_template("top5graph.html", driver_names=driver_names, overall_results=overall_results)
 
 
 if __name__ == '__main__':
