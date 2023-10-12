@@ -1,15 +1,28 @@
 <!-- TODO: Describe what does this file do and how -->
 <!-- TODO: filename reformat with _. -->
-<!-- TODO: Implementation -->
 {% extends "base.html" %}
 {% block content %}
-<!-- driver_list is the variable passed in containing the list of drivers -->
-<!-- Add code to display a list of drivers -->
+    <!-- driver_list is the variable passed in containing the list of drivers -->
+    <h2>Driver List</h2>
 
-<h2>Driver List</h2>
-
-<p>For the Milestone submission, this page just needs to display this text successfully in your browser.</p>
-
-<p>Add the driver list here for your final submission.</p>
-
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Driver ID</th>
+                <th>Name</th>
+                <th>Car Model</th>
+                <th>Drive Class</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for driver in driver_list %}
+                    <tr {% if driver[5] is not none %}class="table-warning"{% endif %}>
+                    <td>{{ driver[0] }}</td>
+                    <td><a href="{{ url_for('driversrundetailspage', driver_id=driver[0]) }}">{{ driver[1] }} {{ driver[2] }}</a></td>
+                    <td>{{ driver[3] }}</td>
+                    <td>{{ driver[4] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

@@ -67,10 +67,16 @@ def overallresults():
 
 @app.route("/listdrivers")
 def listdrivers():
+    """
+    Modify the /listdrivers route so that each driver’s car details are also displayed. Do not display the car_num.
+    Show them in surname then first name order, and use Bootstrap to display the junior drivers in yellow. Make the
+    driver name a clickable link that also displays the driver’s run details page
+    """
     connection = getCursor()
-    connection.execute("SELECT * FROM driver;")
+    connection.execute("SELECT md.driver_id, md.surname, md.first_name, mc.model, mc.drive_class, md.caregiver FROM "
+                       "motorkhana.driver as md LEFT JOIN motorkhana.car as mc ON mc.car_num = md.car "
+                       "ORDER BY md.surname, md.first_name;")
     driverList = connection.fetchall()
-    print(driverList)
     return render_template("driverlist.html", driver_list=driverList)
 
 
@@ -123,6 +129,10 @@ def driversrundetails():
 
 @app.route("/listcourses")
 def listcourses():
+    """
+    Make the courselist page display the course’s image, rather than the name of
+    the image file.
+    """
     connection = getCursor()
     connection.execute("SELECT * FROM course;")
     courseList = connection.fetchall()
