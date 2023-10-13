@@ -123,7 +123,16 @@ def adminview():
 
 @app.route("/adminview/listjuniordrivers")
 def listjuniordrivers():
-    return render_template("listjuniordrivers.html")
+    connection = getCursor()
+    connection.execute("SELECT d1.driver_id, d1.first_name, d1.surname, d2.first_name, d2.surname "
+                       "FROM driver AS d1 "
+                       "JOIN driver AS d2 ON d1.caregiver = d2.driver_id "
+                       "WHERE d1.caregiver IS NOT NULL "
+                       "ORDER BY d1.age DESC, d1.surname;")
+    junior_driver_list = connection.fetchall()
+
+    # i.e. junior_driver_list = [(129, 'Jack', 'Atwood', 'Maggie', 'Atwood')]
+    return render_template("listjuniordrivers.html", junior_driver_list=junior_driver_list)
 
 
 @app.route("/adminview/driversearch")

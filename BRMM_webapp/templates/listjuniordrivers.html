@@ -1,14 +1,27 @@
 <!-- TODO: Describe what does this file do and how -->
 <!-- TODO: filename reformat with _. -->
-<!-- TODO: Implementation -->
 
 {% extends "adminview.html" %}
+
 {% block content %}
-<!-- driver_list is the variable passed in containing the list of drivers -->
-<!-- Add code to display a list of drivers -->
-
-<h2>listjuniordrivers</h2>
-
-<p>TODO.</p>
-
+    <h2>List of Junior Drivers</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Driver ID</th>
+                <th>Driver's Name</th>
+                <th>Caregiver's Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for driver in junior_driver_list %}
+                <tr>
+                    <td>{{ driver[0] }}</td>
+                    <td>{{ driver[1] }} {{ driver[2] }}</td>
+                    <td>{{ driver[3] }} {{ driver[4] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
