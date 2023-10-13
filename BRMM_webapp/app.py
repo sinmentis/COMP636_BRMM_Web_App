@@ -135,9 +135,16 @@ def listjuniordrivers():
     return render_template("listjuniordrivers.html", junior_driver_list=junior_driver_list)
 
 
-@app.route("/adminview/driversearch")
+@app.route("/adminview/driversearch", methods=['GET', 'POST'])
 def driversearch():
-    return render_template("driversearch.html")
+    search_results = None
+    if request.method == 'POST':
+        keyword = request.form.get('search_query')
+        connection = getCursor()
+        connection.execute(f"SELECT * FROM driver WHERE first_name LIKE '%{keyword}%' OR surname LIKE '%{keyword}%';")
+        search_results = connection.fetchall()
+
+    return render_template('driversearch.html', search_results=search_results)
 
 
 @app.route("/adminview/editruns")
