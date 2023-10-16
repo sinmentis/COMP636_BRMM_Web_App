@@ -115,13 +115,13 @@ def home():
     return render_template("base.html")
 
 
-@app.route("/adminview")
+@app.route("/adminview/")
 def adminview():
     # Add your user view logic here
     return render_template("adminview.html")
 
 
-@app.route("/adminview/listjuniordrivers")
+@app.route("/adminview/listjuniordrivers/")
 def listjuniordrivers():
     connection = getCursor()
     connection.execute("SELECT d1.driver_id, d1.first_name, d1.surname, d2.first_name, d2.surname "
@@ -135,7 +135,7 @@ def listjuniordrivers():
     return render_template("listjuniordrivers.html", junior_driver_list=junior_driver_list)
 
 
-@app.route("/adminview/driversearch", methods=['GET', 'POST'])
+@app.route("/adminview/driversearch/", methods=['GET', 'POST'])
 def driversearch():
     search_results = None
     if request.method == 'POST':
@@ -152,7 +152,7 @@ def editruns():
     return render_template("editruns.html")
 
 
-@app.route("/overallresults")
+@app.route("/overallresults/")
 def overallresults():
     """
     Show the overall results in a table, from best to worst overall result, and with any NQ results at the bottom (at
@@ -182,7 +182,7 @@ def overallresults():
     return render_template("overallresults.html", overall_results=overall_results, course_names=course_names)
 
 
-@app.route("/listdrivers")
+@app.route("/listdrivers/")
 def listdrivers():
     """
     Modify the /listdrivers route so that each driver’s car details are also displayed. Do not display the car_num.
@@ -197,7 +197,7 @@ def listdrivers():
     return render_template("driverlist.html", driver_list=driverList)
 
 
-@app.route('/driversrundetails/<int:driver_id>', methods=['GET'])
+@app.route('/driversrundetails/<int:driver_id>/', methods=['GET'])
 def driversrundetailspage(driver_id):
     """
     :param driver_id: Driver's ID to display information about
@@ -221,7 +221,7 @@ def driversrundetailspage(driver_id):
     return render_template('driversrundetails.html', driver_list=driverList, selected_driver=selected_driver_details)
 
 
-@app.route('/driversrundetails', methods=['GET', 'POST'])
+@app.route('/driversrundetails/', methods=['GET', 'POST'])
 def driversrundetails():
     """
     A driver's name is selected from a drop-down list of drivers to display a
@@ -243,7 +243,7 @@ def driversrundetails():
     return render_template('driversrundetails.html', driver_list=driverList)
 
 
-@app.route("/listcourses")
+@app.route("/listcourses/")
 def listcourses():
     """
     Make the courselist page display the course’s image, rather than the name of
@@ -255,7 +255,7 @@ def listcourses():
     return render_template("courselist.html", course_list=courseList)
 
 
-@app.route("/showgraph")
+@app.route("/showgraph/")
 def showgraph():
     """
     Bar graph: Display a horizontal bar graph of the top 5 drivers overall. using driver names and overall results as
