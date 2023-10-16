@@ -147,9 +147,90 @@ def driversearch():
     return render_template('driversearch.html', search_results=search_results)
 
 
-@app.route("/adminview/editruns")
+@app.route("/adminview/editruns/", methods=['GET', 'POST'])
 def editruns():
-    return render_template("editruns.html")
+    result_list = None
+    if request.method == 'POST':
+        search_run_sql_query = f"SELECT md.driver_id, md.surname, md.first_name, mr.crs_id, ms.name, mr.run_num, " \
+                               f"mc.model, mc.drive_class, mr.cones, mr.wd, mr.seconds " \
+                               f"FROM motorkhana.driver as md " \
+                               f"LEFT JOIN motorkhana.car as mc ON mc.car_num = md.car " \
+                               f"LEFT JOIN motorkhana.run as mr ON mr.dr_id = md.driver_id " \
+                               f"LEFT JOIN motorkhana.course as ms ON mr.crs_id = ms.course_id "
+
+        selected_driver = request.form.get('selected_driver')
+        if selected_driver:
+            search_run_sql_query += f"WHERE md.driver_id = {selected_driver} "
+
+        selected_course = request.form.get('selected_course')
+        if selected_course:
+            if " WHERE " in search_run_sql_query:
+                search_run_sql_query += f"AND mr.crs_id = '{selected_course}'"
+            else:
+                search_run_sql_query += f"WHERE mr.crs_id = '{selected_course}'"
+
+        search_run_sql_query += ";"
+        connection = getCursor()
+        connection.execute(search_run_sql_query)
+        result_list = connection.fetchall()
+
+    connection = getCursor()
+
+    # Retrieve the list of drivers and courses to populate the dropdown menus
+    connection.execute("SELECT driver_id, first_name, surname FROM driver;")
+    driver_list = connection.fetchall()
+
+    connection.execute("SELECT course_id, name FROM course;")
+    course_list = connection.fetchall()
+
+    return render_template("editruns.html", driver_list=driver_list, course_list=course_list,
+                           result_list=result_list)
+
+
+@app.route("/adminview/editrun/<int:driver_id>-<int:run_num>-<string:course_id>/", methods=['GET', 'POST'])
+def editrun(driver_id, course_id, run_num):
+
+    if request.method == 'POST':
+        edited_cones = request.form.get('cones')
+        edited_wd = request.form.get('wd')
+        edited_seconds = request.form.get('seconds')
+
+        if edited_cones == "" or edited_cones == "None":
+            edited_cones = None
+        if edited_wd == "" or edited_wd == "None":
+            edited_wd = 0
+        if edited_seconds == "" or edited_seconds == "None":
+            edited_seconds = None
+
+        connection = getCursor()
+        update_query = ("UPDATE motorkhana.run "
+                        "SET cones = %s, wd = %s, seconds = %s "
+                        "WHERE dr_id = %s AND crs_id = %s AND run_num = %s;")
+        connection.execute(update_query, (edited_cones, edited_wd, edited_seconds, driver_id, course_id, run_num))
+
+    connection = getCursor()
+
+    connection.execute("SELECT driver_id, first_name, surname FROM driver;")
+    driver_list = connection.fetchall()
+
+    connection.execute("SELECT course_id, name FROM course;")
+    course_list = connection.fetchall()
+
+    connection.execute(f"SELECT md.driver_id, md.surname, md.first_name, mr.crs_id, ms.name, mr.run_num, "
+                       f"mc.model, mc.drive_class, mr.cones, mr.wd, mr.seconds "
+                       f"FROM motorkhana.driver as md "
+                       f"LEFT JOIN motorkhana.car as mc ON mc.car_num = md.car "
+                       f"LEFT JOIN motorkhana.run as mr ON mr.dr_id = md.driver_id "
+                       f"LEFT JOIN motorkhana.course as ms ON mr.crs_id = ms.course_id "
+                       f"WHERE md.driver_id = {driver_id} "
+                       f"AND mr.run_num = {run_num} "
+                       f"AND mr.crs_id = '{course_id}';")
+    run_result = connection.fetchone()
+
+    return render_template("editrun.html",
+                           driver_list=driver_list,
+                           course_list=course_list,
+                           run_result=run_result)
 
 
 @app.route("/overallresults/")
