@@ -22,6 +22,17 @@ app = Flask(__name__)
 
 dbconn = None
 connection = None
+courses_range = ['A', 'B', 'C', 'D', 'E', 'F']
+run_numbers_range = [1, 2]
+
+
+def calculate_age(birthdate):
+    age = None
+    if birthdate:
+        birthdate = datetime.strptime(birthdate, '%Y-%m-%d')
+        today = datetime.today()
+        age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+    return age
 
 
 def total_time_sort_key(item):
@@ -189,7 +200,6 @@ def editruns():
 
 @app.route("/adminview/editrun/<int:driver_id>-<int:run_num>-<string:course_id>/", methods=['GET', 'POST'])
 def editrun(driver_id, course_id, run_num):
-
     if request.method == 'POST':
         edited_cones = request.form.get('cones')
         edited_wd = request.form.get('wd')
@@ -231,6 +241,70 @@ def editrun(driver_id, course_id, run_num):
                            driver_list=driver_list,
                            course_list=course_list,
                            run_result=run_result)
+
+
+@app.route("/adminview/adddriver/")
+def adddriver():
+    return render_template("adddriver.html")
+
+
+@app.route("/adminview/adddriver/<int:junior>/", methods=['GET', 'POST'])
+def adddriver2(junior):
+    connection = getCursor()
+
+    # Retrieve eligible caregivers (age > 25)
+    connection.execute("SELECT driver_id, first_name, surname "
+                       "FROM motorkhana.driver "
+                       "WHERE age > 25 OR age IS NULL;") # Assume Null means valid caregivers
+    eligible_caregivers = connection.fetchall()
+
+    # Retrieve All cars
+    connection.execute("SELECT * FROM motorkhana.car;")
+    existing_cars = connection.fetchall()
+
+    message = None  # Error display style will be used when Keyword "Error: " detected
+    try:
+        if request.method == 'POST':
+            is_junior = request.form.get('is_junior')
+            caregiver = request.form.get('caregiver')
+
+            # Check if caregiver is selected for junior driver
+            if is_junior and not caregiver:
+                message = "Error: Since new user is a junior, must assign a valid caregiver from dropdown box"
+            else:
+                date_of_birth = request.form.get('date_of_birth')
+                age = calculate_age(date_of_birth)
+                first_name = request.form.get('first_name')
+                surname = request.form.get('surname')
+                car = request.form.get('car')
+
+                # Insert the new driver into the "driver" table
+                insert_driver_query = """
+                INSERT INTO motorkhana.driver (first_name, surname, date_of_birth, age, caregiver, car)
+                VALUES (%s, %s, %s, %s, %s, %s);
+                """
+                connection.execute(insert_driver_query,(first_name, surname, date_of_birth, age, caregiver, car))
+
+                # Get the new driver ID from the last inserted row
+                connection.execute("SELECT LAST_INSERT_ID();")
+                new_driver_id = connection.fetchone()[0]
+
+                # Update run table for new driver with default value
+                for course in courses_range:
+                    for run_number in run_numbers_range:
+                        connection.execute("INSERT INTO motorkhana.run (dr_id, crs_id, run_num, seconds, cones, wd) "
+                                           "VALUES (%s, %s, %s, NULL, NULL, 0);",
+                                           (new_driver_id, course, run_number))
+
+                message = f"Driver added successfully with ID: {new_driver_id}"
+    except Exception as e:
+        message = f"Error: {e}"
+
+    return render_template("adddriver2.html",
+                           eligible_caregivers=eligible_caregivers,
+                           existing_cars=existing_cars,
+                           message=message,
+                           junior=junior)
 
 
 @app.route("/overallresults/")
