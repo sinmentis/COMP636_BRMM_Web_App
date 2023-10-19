@@ -1,0 +1,42 @@
+<!-- This template extends the base_admin_view.html layout and displays a list of junior drivers. -->
+
+{% extends "base_admin_view.html" %}
+
+{% block content %}
+    <!-- Create a container with top margin for proper alignment. -->
+    <div class="container mt-5">
+        <!-- Add a jumbotron for a visually appealing header section. -->
+        <div class="jumbotron text-center">
+            <!-- Visually appealing header with title and description. -->
+            <h1 class="display-4">List of Junior Drivers</h1>
+            <p class="lead">Browse the junior drivers and their caregiver information.</p>
+            <hr class="my-4">
+            <!-- Create a responsive table to display driver details. -->
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <!-- Define table headers for Driver ID, Driver's Name, and Caregiver's Name. -->
+                            <th>Driver ID</th>
+                            <th>Driver's Name</th>
+                            <th>Caregiver's Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Iterate through junior drivers and populate the table with their details. -->
+                        {% for driver in junior_driver_list %}
+                            <tr>
+                                <!-- Display Driver ID, Driver's Name, and Caregiver's Name in respective columns. -->
+                                <td>{{ driver[0] }}</td>
+                                <td>{{ driver[1] }} {{ driver[2] }}</td>
+                                <td>{{ driver[3] }} {{ driver[4] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- End of the junior drivers' table. -->
+        </div>
+    </div>
+    <!-- End of content block. -->
+{% endblock %}

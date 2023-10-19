@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <h2 class="display-4 text-center mb-4">Driver List</h2>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Driver ID</th>
+                            <th>Name</th>
+                            <th>Car Model</th>
+                            <th>Drive Class</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for driver in driver_list %}
+                            <tr {% if driver[5] is not none %}class="table-warning"{% endif %}>
+                                <td>{{ driver[0] }}</td>
+                                <td>
+                                    <a href="{{ url_for('drivers_run_details_page', driver_id=driver[0]) }}">
+                                        {{ driver[1] }} {{ driver[2] }}
+                                    </a>
+                                </td>
+                                <td>{{ driver[3] }}</td>
+                                <td>{{ driver[4] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

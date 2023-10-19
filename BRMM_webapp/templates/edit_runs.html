@@ -1,0 +1,88 @@
+<!-- This template extends the base_admin_view.html layout and displays a form to select a driver and course for editing runs. -->
+
+{% extends "base_admin_view.html" %}
+
+{% block content %}
+    <!-- Create a container with top margin for proper alignment. -->
+    <div class="container mt-5">
+                <!-- Add a visually appealing heading for the Edit Run section. -->
+        <h2 class="display-4 text-center">Edit Run</h2>
+
+        <!-- Add a bordered container to enclose the form for better UI. -->
+        <div class="border p-3">
+            <!-- Create a form to select a driver and course for editing runs. -->
+            <form method="post" action="{{ url_for('edit_runs') }}">
+                <div class="form-group">
+                    <!-- Label and dropdown to select a driver. -->
+                    <label for="driverSelect">Select a Driver:</label>
+                    <select class="form-control" id="driverSelect" name="selected_driver">
+                        <option value="">Select a driver...</option>
+                        {% for driver in driver_list %}
+                            <option value="{{ driver[0] }}" {% if selected_driver and selected_driver[0] == driver[0] %}selected{% endif %}>
+                                {{ driver[1] }} {{ driver[2] }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <!-- Label and dropdown to select a course. -->
+                    <label for="courseSelect">Select a Course:</label>
+                    <select class="form-control" id="courseSelect" name="selected_course">
+                        <option value="">Select a course...</option>
+                        {% for course in course_list %}
+                            <option value="{{ course[0] }}">
+                                {{ course[0] }} - {{course[1] }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- Submit button for the form. -->
+                <button type="submit" class="btn btn-primary">View Runs</button>
+            </form>
+        </div>
+        {% if result_list %}
+            <!-- Heading for displaying run details. -->
+            <h3 class="mt-4">Run Details</h3>
+            <!-- Create a responsive table to display run details. -->
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <!-- Define table headers for Driver ID, Driver Name, Course Name, Run Number, Model, Drive Class, Cones, WD, Seconds, and Action. -->
+                        <th>Driver ID</th>
+                        <th>Driver Name</th>
+                        <th>Course Name</th>
+                        <th>Run Number</th>
+                        <th>Model</th>
+                        <th>Drive Class</th>
+                        <th>Cones</th>
+                        <th>WD</th>
+                        <th>Seconds</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Iterate through run results and populate the table with run details. -->
+                    {% for run in result_list %}
+                        <tr>
+                            <!-- Display run details in respective columns. -->
+                            <td>{{ run[0] }}</td>
+                            <td>{{ run[1] }} {{ run[2] }}</td>
+                            <td>{{ run[3] }} - {{ run[4] }}</td>
+                            <td>{{ run[5] }}</td>
+                            <td>{{ run[6] }}</td>
+                            <td>{{ run[7] }}</td>
+                            <td>{{ run[8] }}</td>
+                            <td>{{ run[9] }}</td>
+                            <td>{{ run[10] }}</td>
+                            <td>
+                                <!-- Create a button to edit the run. -->
+                                <a href="{{ url_for('edit_run', driver_id=run[0], course_id=run[3], run_num=run[5]) }}" class="btn btn-primary">Edit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+    <!-- End of content block. -->
+{% endblock %}
