@@ -1,4 +1,5 @@
-# COMP636_BRMM_Web_App
+# COMP636_BRMM_Web_App - Report
+Shun Lyu 1158154
 A small Web Application to help the manage drivers, cars, courses and runs for a single competitive Motorkhana event.
 
 
@@ -23,22 +24,10 @@ graph TD;
     overallResults["overall_results/"];
     showGraph["show_graph/"];
 
-    root --> adminView;
     root --> publicView;
-    root --> genericErrorHandlingPage;
 
 
-    adminView --> listJuniorDrivers;
-    adminView --> driverSearch;
-    adminView --> editRuns;
-    adminView --> addDriver;
-
-    editRuns --> editRun;
-
-    addDriver --> caregiver;
-    addDriver --> junior;
-
-
+    publicView --> adminView;
     publicView --> listCourses;
     publicView --> driversRunDetails;
     publicView --> overallResults;
@@ -48,6 +37,19 @@ graph TD;
     listDrivers --> driversRunDetails;
 
     driversRunDetails --> driverID;
+
+
+    adminView --> publicView
+    adminView --> listJuniorDrivers;
+    adminView --> driverSearch;
+    adminView --> editRuns;
+    editRuns --> editRun;
+    adminView --> addDriver;
+    addDriver --> caregiver;
+    addDriver --> junior;
+
+
+
 ```
 ## Routes
 - /: Root
@@ -122,7 +124,7 @@ graph TD;
 
 
 ## Design decisions
-1. **Separating the public view from the admin view** involves creating parallel routes and templates that minimize their interactions, effectively decoupling them. This approach is a sound design practice.
+1. **Separating the public view from the admin view** involves creating parallel routes and templates that minimize their interactions, effectively decoupling them. This approach is a sound design practice. Using a base template with a shared navigation bar ensures a consistent user experience and efficient code reuse across both public and admin views, enhancing maintainability and scalability.
 2. **Error Handling Page:**: To ensure a smooth user experience and address potential issues such as invalid URLs or unauthorized access attempts, a generic error handling page has been incorporated into the application. This dedicated error page provides clear and concise error messages to users in the event of unexpected situations.
 3. **Limitation of JavaScript**: Due to restrictions disallowing the use of JavaScript within the code, managing the visibility of elements when adding a new driver presented a challenge. As a solution, I introduced an additional button that prompts the user to specify whether the new driver is a junior or a regular driver. This approach allows us to progress to the next step with an additional flag argument, enabling us to control the display of content accordingly
 4. **Performance Optimization**: Python has been chosen over SQL for complex calculations to improve efficiency, maintainability, and scalability. This design decision streamlines code and enhances application performance.
@@ -145,7 +147,9 @@ CREATE TABLE IF NOT EXISTS car
 ```
 ## Which line of SQL code sets up the relationship between the car and driver tables?
 ```sql
-FOREIGN KEY (car) REFERENCES car(car_num) ON UPDATE CASCADE ON DELETE CASCADE
+FOREIGN KEY (car) REFERENCES car(car_num)
+ON UPDATE CASCADE
+ON DELETE CASCADE
 ```
 ## Which 3 lines of SQL code insert the Mini and GR Yaris details into the car table?
 ```sql
@@ -158,5 +162,5 @@ drive_class VARCHAR(3) NOT NULL DEFAULT 'RWD'
 ```
 
 ## Suppose logins were implemented. Why is it important for drivers and the club admin to access different routes? As part of your answer, give two specific examples of problems that could occur if all of the web app facilities were available to everyone.
-* Using different route can make the traffic monitoring easier, if all users uses same route then there will be a lot more noise in the traffic.
-* "Hide" admin page from normal user can help with security and data privacy. If we are using the same route but display different content, hacker and either edit the page and explore interfaces by alter the HTML code. Or better yet, use leaked cookie to entry the system.
+1. Using different route can make the traffic monitoring easier, if all users uses same route then there will be a lot more noise in the traffic.
+2. "Hide" admin page from normal user can help with security and data privacy. If we are using the same route but display different content, hacker and either edit the page and explore interfaces by alter the HTML code. Or better yet, use leaked cookie to entry the system.

@@ -4,13 +4,21 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
+                <!-- Title for the page -->
                 <h2 class="display-4 text-center mb-4">Driver List Detail</h2>
+
+                <!-- Form to select a driver and view their details -->
                 <form method="post" action="{{ url_for('drivers_run_details') }}">
                     <div class="form-group">
                         <label for="driverSelect">Select a Driver:</label>
+
+                        <!-- Dropdown to select a driver from the list -->
                         <select class="form-control" id="driverSelect" name="selected_driver">
                             <option value="">Select a driver...</option>
+
+                            <!-- Loop through the list of drivers -->
                             {% for driver in driver_list %}
+                                <!-- Display driver's full name and select the previously selected driver, if any -->
                                 <option value="{{ driver[0] }}" {% if selected_driver and selected_driver[0] == driver[0] %}selected{% endif %}>
                                     {{ driver[1] }} {{ driver[2] }}
                                 </option>
@@ -18,17 +26,23 @@
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">View Details</button>
+
+                    <!-- If a driver is selected, send their ID for processing -->
                     {% if selected_driver %}
                         <input type="hidden" name="driver_id" value="{{ selected_driver[0][0] }}">
                     {% endif %}
                 </form>
 
+                <!-- If a driver is selected, display their run details -->
                 {% if selected_driver %}
                     <h2 class="mt-4">Run details on driver: {{ selected_driver[0][0] }} - {{ selected_driver[0][1] }} {{ selected_driver[0][2] }}</h2>
                     <div class="table-responsive mt-4">
+                        <!-- Table to display run details with Bootstrap styles -->
                         <table class="table table-bordered table-striped">
+                            <!-- Table header with a dark background -->
                             <thead class="thead-dark">
                                 <tr>
+                                    <!-- Column headers for run details -->
                                     <th>Course Name</th>
                                     <th>Run Number</th>
                                     <th>Car Model</th>
@@ -39,8 +53,10 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <!-- Loop through the selected driver's run details -->
                                 {% for run in selected_driver %}
                                     <tr>
+                                        <!-- Display each field of the run -->
                                         {% for field in run[3:] %}
                                             <td class="align-middle">{{ field }}</td>
                                         {% endfor %}

@@ -3,11 +3,13 @@
 {% block content %}
     <div class="container mt-5">
         <div class="jumbotron">
+            <!-- A jumbotron with a welcome message and description -->
             <h1 class="display-4">Welcome, Admin!</h1>
             <p class="lead">Manage the Bankside Rakaia Motorkhana Mavens competitions with ease.</p>
             <hr class="my-4">
             <p>As an admin, you have access to a range of powerful features:</p>
             <ul>
+                <!-- List of admin features -->
                 <li>View the list of junior drivers, including caregiver names, ordered by age and surname.</li>
                 <li>Efficiently search for drivers by first name or surname with partial text matches.</li>
                 <li>Edit run details, including times, cones, and WD for specific drivers and courses.</li>
@@ -18,6 +20,7 @@
     </div>
 
     <div class="position-absolute top-0 end-0 m-3">
+        <!-- A link to the public view -->
         <a href="{{ url_for('home') }}" class="btn btn-secondary">Public View</a>
     </div>
 {% endblock %}

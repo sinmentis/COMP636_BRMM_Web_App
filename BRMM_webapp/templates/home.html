@@ -3,20 +3,24 @@
 {% block content %}
     <div class="container mt-5">
         <div class="jumbotron">
+            <!-- A jumbotron with a welcome message and description -->
             <h1 class="display-4">Welcome to Bankside Rakaia Motorkhana Mavens!</h1>
             <p class="lead">Experience the excitement of motorkhana events with us.</p>
             <hr class="my-4">
             <p>Explore our range of features and data related to motorkhana competitions.</p>
+            <!-- A button to get started with the site -->
             <a class="btn btn-primary btn-lg" href="{{ url_for('list_courses') }}" role="button">Get Started</a>
         </div>
     </div>
 
     <div class="position-absolute top-0 end-0 m-3">
+        <!-- A link to the admin view -->
         <a href="{{ url_for('admin_view') }}" class="btn btn-secondary">Admin View</a>
     </div>
 
     <div class="container mt-5">
         <h2>Public Features</h2>
+        <!-- List of public features and descriptions -->
         <ul>
             <li>
                 <strong>List of Courses:</strong> Discover the courses with images on the courselist page.

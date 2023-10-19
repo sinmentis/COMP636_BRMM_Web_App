@@ -1,26 +1,33 @@
 {% extends "base_admin_view.html" %}
 
 {% block content %}
+    <!-- Container for the content -->
     <div class="container mt-5">
+        <!-- Page title and description -->
         <h2 class="display-4 text-center">Add a New Driver</h2>
         <p class="lead text-center">Choose the driver type: Regular or Junior.</p>
 
+        <!-- Row with two columns for Regular and Junior Driver options -->
         <div class="row justify-content-center">
+            <!-- Regular Driver option -->
             <div class="col-md-4">
                 <div class="card text-center">
                     <div class="card-body">
                         <h5 class="card-title">Regular Driver</h5>
                         <p class="card-text">Drivers aged 26 and above</p>
+                        <!-- Link to add a Regular Driver -->
                         <a href="{{ url_for('add_driver2', junior=0) }}" class="btn btn-primary">Add Regular Driver</a>
                     </div>
                 </div>
             </div>
 
+            <!-- Junior Driver option -->
             <div class="col-md-4">
                 <div class="card text-center">
                     <div class="card-body">
                         <h5 class="card-title">Junior Driver</h5>
                         <p class="card-text">Drivers aged 12 to 25</p>
+                        <!-- Link to add a Junior Driver -->
                         <a href="{{ url_for('add_driver2', junior=1) }}" class="btn btn-primary">Add Junior Driver</a>
                     </div>
                 </div>

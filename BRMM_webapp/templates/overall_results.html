@@ -5,14 +5,17 @@
         <div class="row">
             <div class="col-lg-12">
                 <h2 class="display-4 text-center mb-4">Overall Results</h2>
+                <!-- A table to display overall results -->
                 <table class="table table-striped">
                     <thead class="thead-dark">
                         <tr>
+                            <!-- Table header with columns -->
                             <th>Driver ID</th>
                             <th>Driver Name</th>
                             <th>Car Model</th>
                             <th>Drive Class</th>
                             {% for course_name in course_names %}
+                                <!-- Display course names as column headers -->
                                 <th>{{ course_name }}</th>
                             {% endfor %}
                             <th>Overall Result</th>
@@ -21,13 +24,23 @@
                     </thead>
                     <tbody>
                         {% for driver_id, driver in overall_results %}
+                            <!-- Loop through driver results -->
                             <tr {% if driver.junior is not none %}class="table-warning"{% endif %}>
+                                <!-- Highlight junior drivers with a warning class -->
                                 <td>{{ driver_id }}</td>
-                                <td>{{ driver.first_name }} {{ driver.surname }} {% if driver.junior is not none %}(J){% endif %}</td>
+                                <!-- Display driver ID -->
+                                <td>
+                                    {{ driver.first_name }} {{ driver.surname }} {% if driver.junior is not none %}(J){% endif %}
+                                    <!-- Display driver name with a "J" if junior -->
+                                </td>
                                 <td>{{ driver.model }}</td>
+                                <!-- Display car model -->
                                 <td>{{ driver.drive_class }}</td>
+                                <!-- Display driver's class -->
                                 {% for course_name in course_names %}
+                                    <!-- Loop through course results -->
                                     <td>{{ driver.courses[course_name] }}</td>
+                                    <!-- Display the result for each course -->
                                 {% endfor %}
                                 <td>
                                     {% if driver.total_time == "Not Qualified" %}
@@ -35,14 +48,16 @@
                                     {% else %}
                                         {{ driver.total_time|float|round(2) }}
                                     {% endif %}
+                                    <!-- Display overall result, handling "Not Qualified" case -->
                                 </td>
                                 <td>
                                     {% if loop.index == 1 %}
-                                        🏆 <!-- This is the emoji for a trophy (cup) -->
+                                        🏆 <!-- Display a trophy emoji for the first place -->
                                     {% endif %}
                                     {% if loop.index > 1 and loop.index <= 5 %}
-                                        🎁 <!-- This is the emoji for a prize -->
+                                        🎁 <!-- Display a gift emoji for 2nd to 5th place -->
                                     {% endif %}
+                                    <!-- Display awards based on the position in the table -->
                                 </td>
                             </tr>
                         {% endfor %}

@@ -1,20 +1,24 @@
 {% extends "base.html" %}
-{% block content %}
 
+{% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
+            <!-- Card with a border of danger color (red) -->
             <div class="card border-danger">
                 <div class="card-header bg-danger text-white">
+                    <!-- Card header with a red background -->
                     <h2>Error!</h2>
                 </div>
                 <div class="card-body">
+                    <!-- Card body content -->
                     <p>An error occurred while processing your request.</p>
+                    <!-- Display a generic error message -->
                     <p>{{ error_message }}</p>
+                    <!-- Display a specific error message provided as a variable -->
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}

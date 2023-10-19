@@ -4,11 +4,17 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
+                <!-- Title for the page -->
                 <h2 class="display-4 text-center mb-4">Current Competition Courses</h2>
+
+                <!-- Table container with responsive design -->
                 <div class="table-responsive">
+                    <!-- Table with Bootstrap styles -->
                     <table class="table table-bordered table-striped">
+                        <!-- Table header with a dark background -->
                         <thead class="thead-dark">
                             <tr>
+                                <!-- Column headers -->
                                 <th>Course</th>
                                 <th>Name</th>
                                 <th>Map Diagram</th>
@@ -20,9 +26,11 @@
                                     {% for field in course %}
                                         {% if loop.index0 == 2 %}
                                             <td>
+                                                <!-- Display an image for the 'Map Diagram' field -->
                                                 <img src="/static/{{ field }}" alt="Course Map" class="img-fluid rounded" style="max-width: 100%; height: auto;">
                                             </td>
                                         {% else %}
+                                            <!-- For other fields, display the data in the table cell -->
                                             <td class="align-middle">{{ field }}</td>
                                         {% endif %}
                                     {% endfor %}

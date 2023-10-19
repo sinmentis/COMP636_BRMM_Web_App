@@ -2,11 +2,14 @@
 
 {% block content %}
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- Include Plotly library -->
     <div class="container mt-5">
         <div class="row">
             <div class="col-lg-12">
                 <h2 class="display-4 text-center mb-4">Top 5 Drivers</h2>
+                <!-- Display a heading for the graph -->
                 <div id="myHBarPlot" style="width:100%; max-width:800px; margin: 0 auto;"></div>
+                <!-- Create a div element for the Plotly horizontal bar graph with specific styling -->
             </div>
         </div>
     </div>
@@ -14,24 +17,32 @@
     <script>
         const driver_names = {{ driver_names | safe }};
         const overall_results = {{ overall_results | safe }};
+        // <!-- Define JavaScript variables by rendering server-side data safely -->
 
         const data = [
             {
                 y: driver_names.map(name => name + ' '),
+                // <!-- Create an array of driver names -->
                 x: overall_results,
+                // <!-- Create an array of overall results -->
                 type: "bar",
                 orientation: "h",
                 marker: { color: "dodgerblue" },
                 textposition: 'outside'
             }
         ];
+        // <!-- Define data for the Plotly horizontal bar graph -->
 
         const layout = {
             yaxis: { autorange: 'reversed', automargin: true },
+            // <!-- Configure the y-axis with reversed order -->
             xaxis: { title: "Overall Result (s)" },
+            // <!-- Configure the x-axis title -->
             title: "Top 5 Drivers"
+            // <!-- Set the title for the graph -->
         };
 
         Plotly.newPlot("myHBarPlot", data, layout);
+        // <!-- Create the Plotly horizontal bar graph with specified data and layout -->
     </script>
 {% endblock %}

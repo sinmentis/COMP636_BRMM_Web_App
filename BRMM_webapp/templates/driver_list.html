@@ -4,10 +4,15 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
+                <!-- Title for the page -->
                 <h2 class="display-4 text-center mb-4">Driver List</h2>
+
+                <!-- Table for displaying driver information with Bootstrap styles -->
                 <table class="table table-striped">
+                    <!-- Table header with a dark background -->
                     <thead class="thead-dark">
                         <tr>
+                            <!-- Column headers -->
                             <th>Driver ID</th>
                             <th>Name</th>
                             <th>Car Model</th>
@@ -16,15 +21,22 @@
                     </thead>
                     <tbody>
                         {% for driver in driver_list %}
+                            <!-- Iterate through the driver list -->
                             <tr {% if driver[5] is not none %}class="table-warning"{% endif %}>
+                                <!-- If the driver's run is not None, add a warning class -->
                                 <td>{{ driver[0] }}</td>
+                                <!-- Display the driver's ID -->
                                 <td>
+                                    <!-- Create a link to the driver's run details page -->
                                     <a href="{{ url_for('drivers_run_details_page', driver_id=driver[0]) }}">
+                                        <!-- Display the driver's full name -->
                                         {{ driver[1] }} {{ driver[2] }}
                                     </a>
                                 </td>
                                 <td>{{ driver[3] }}</td>
+                                <!-- Display the driver's car model -->
                                 <td>{{ driver[4] }}</td>
+                                <!-- Display the driver's driving class -->
                             </tr>
                         {% endfor %}
                     </tbody>
