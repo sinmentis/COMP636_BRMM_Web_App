@@ -1,0 +1,30 @@
+{% extends "base_admin_view.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2 class="display-4 text-center">Add a New Driver</h2>
+        <p class="lead text-center">Choose the driver type: Regular or Junior.</p>
+
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Regular Driver</h5>
+                        <p class="card-text">Drivers aged 26 and above</p>
+                        <a href="{{ url_for('add_driver2', junior=0) }}" class="btn btn-primary">Add Regular Driver</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Junior Driver</h5>
+                        <p class="card-text">Drivers aged 12 to 25</p>
+                        <a href="{{ url_for('add_driver2', junior=1) }}" class="btn btn-primary">Add Junior Driver</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

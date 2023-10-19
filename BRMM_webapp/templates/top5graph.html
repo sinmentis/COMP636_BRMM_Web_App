@@ -1,12 +1,15 @@
-<!-- TODO: Describe what does this file do and how -->
-<!-- TODO: filename reformat with _. -->
-
 {% extends "base.html" %}
+
 {% block content %}
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-
-    <h2>Top 5 Drivers</h2>
-    <div id="myHBarPlot" style="width:100%; max-width:800px;"></div>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="display-4 text-center mb-4">Top 5 Drivers</h2>
+                <div id="myHBarPlot" style="width:100%; max-width:800px; margin: 0 auto;"></div>
+            </div>
+        </div>
+    </div>
 
     <script>
         const driver_names = {{ driver_names | safe }};
@@ -32,4 +35,3 @@
         Plotly.newPlot("myHBarPlot", data, layout);
     </script>
 {% endblock %}
-
