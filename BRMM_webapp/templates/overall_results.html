@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="display-4 text-center mb-4">Overall Results</h2>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Driver ID</th>
+                            <th>Driver Name</th>
+                            <th>Car Model</th>
+                            <th>Drive Class</th>
+                            {% for course_name in course_names %}
+                                <th>{{ course_name }}</th>
+                            {% endfor %}
+                            <th>Overall Result</th>
+                            <th>Awards</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for driver_id, driver in overall_results %}
+                            <tr {% if driver.junior is not none %}class="table-warning"{% endif %}>
+                                <td>{{ driver_id }}</td>
+                                <td>{{ driver.first_name }} {{ driver.surname }} {% if driver.junior is not none %}(J){% endif %}</td>
+                                <td>{{ driver.model }}</td>
+                                <td>{{ driver.drive_class }}</td>
+                                {% for course_name in course_names %}
+                                    <td>{{ driver.courses[course_name] }}</td>
+                                {% endfor %}
+                                <td>
+                                    {% if driver.total_time == "Not Qualified" %}
+                                        Not Qualified
+                                    {% else %}
+                                        {{ driver.total_time|float|round(2) }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if loop.index == 1 %}
+                                        🏆 <!-- This is the emoji for a trophy (cup) -->
+                                    {% endif %}
+                                    {% if loop.index > 1 and loop.index <= 5 %}
+                                        🎁 <!-- This is the emoji for a prize -->
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

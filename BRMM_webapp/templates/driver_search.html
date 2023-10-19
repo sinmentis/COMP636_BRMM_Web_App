@@ -1,0 +1,68 @@
+<!-- This template extends the base_admin_view.html layout and displays a driver search form and results. -->
+
+{% extends "base_admin_view.html" %}
+
+{% block content %}
+    <!-- Create a container with top margin for proper alignment. -->
+    <div class="container mt-5">
+        <!-- Add a visually appealing heading for the driver search section. -->
+        <h2 class="display-4 text-center">Driver Search</h2>
+
+        <!-- Add a bordered container to enclose the search form for better UI. -->
+        <div class="border p-3">
+            <!-- Create a form for searching drivers. -->
+            <form method="post" action="{{ url_for('driver_search') }}">
+                <div class="form-group">
+                    <!-- Label and input for search query. -->
+                    <label for="search_query">Search by First Name or Surname</label>
+                    <input type="text" name="search_query" id="search_query" class="form-control" placeholder="Enter first name or surname">
+                </div>
+                <!-- Submit button for the search form. -->
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+
+        <!-- Heading for search results section. -->
+        <h2 class="mt-4 text-center">Search Results</h2>
+        <!-- Create a responsive table to display search results. -->
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <!-- Define table headers. -->
+                        <th>Driver ID</th>
+                        <th>First Name</th>
+                        <th>Surname</th>
+                        <th>Date of Birth</th>
+                        <th>Age</th>
+                        <th>Caregiver</th>
+                        <th>Car</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Check if search results exist. -->
+                    {% if search_results %}
+                        {% for driver in search_results %}
+                            <tr>
+                                <!-- Display driver details in respective columns. -->
+                                <td>{{ driver[0] }}</td>
+                                <td>{{ driver[1] }}</td>
+                                <td>{{ driver[2] }}</td>
+                                <td>{{ driver[3] }}</td>
+                                <td>{{ driver[4] }}</td>
+                                <td>{{ driver[5] }}</td>
+                                <td>{{ driver[6] }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <!-- Display a message when no results are found. -->
+                        <tr>
+                            <td colspan="7" class="text-center">No results found.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- End of content block. -->
+{% endblock %}

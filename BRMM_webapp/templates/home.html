@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="jumbotron">
+            <h1 class="display-4">Welcome to Bankside Rakaia Motorkhana Mavens!</h1>
+            <p class="lead">Experience the excitement of motorkhana events with us.</p>
+            <hr class="my-4">
+            <p>Explore our range of features and data related to motorkhana competitions.</p>
+            <a class="btn btn-primary btn-lg" href="{{ url_for('list_courses') }}" role="button">Get Started</a>
+        </div>
+    </div>
+
+    <div class="position-absolute top-0 end-0 m-3">
+        <a href="{{ url_for('admin_view') }}" class="btn btn-secondary">Admin View</a>
+    </div>
+
+    <div class="container mt-5">
+        <h2>Public Features</h2>
+        <ul>
+            <li>
+                <strong>List of Courses:</strong> Discover the courses with images on the courselist page.
+            </li>
+            <li>
+                <strong>Driver's Run Details:</strong> Select a driver's name from the drop-down list to view their run details and totals.
+            </li>
+            <li>
+                <strong>List of Drivers:</strong> Explore the list of drivers, including car details, sorted by name. Junior drivers are highlighted in yellow.
+            </li>
+            <li>
+                <strong>Overall Results:</strong> Check out the overall results table with driver names, car models, and times for each course. Winners and top performers are recognized.
+            </li>
+            <li>
+                <strong>Bar Graph:</strong> View a horizontal bar graph of the top 5 drivers overall.
+            </li>
+        </ul>
+    </div>
+{% endblock %}
