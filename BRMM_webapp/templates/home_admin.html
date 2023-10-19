@@ -1,0 +1,23 @@
+{% extends "base_admin_view.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="jumbotron">
+            <h1 class="display-4">Welcome, Admin!</h1>
+            <p class="lead">Manage the Bankside Rakaia Motorkhana Mavens competitions with ease.</p>
+            <hr class="my-4">
+            <p>As an admin, you have access to a range of powerful features:</p>
+            <ul>
+                <li>View the list of junior drivers, including caregiver names, ordered by age and surname.</li>
+                <li>Efficiently search for drivers by first name or surname with partial text matches.</li>
+                <li>Edit run details, including times, cones, and WD for specific drivers and courses.</li>
+                <li>Add new drivers, assign them to existing cars, and create 12 blank runs for each.</li>
+            </ul>
+            <p>Enjoy the simplicity of managing your motorkhana competitions with these comprehensive tools.</p>
+        </div>
+    </div>
+
+    <div class="position-absolute top-0 end-0 m-3">
+        <a href="{{ url_for('home') }}" class="btn btn-secondary">Public View</a>
+    </div>
+{% endblock %}
