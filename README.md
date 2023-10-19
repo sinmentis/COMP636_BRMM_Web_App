@@ -4,57 +4,50 @@ A small Web Application to help the manage drivers, cars, courses and runs for a
 
 # Web application structure:
 ```mermaid
-graph LR
-  subgraph Root["/"]
-  end
-  subgraph Error["Generic Error Handling Page"]
-  end
-  subgraph Admin["admin_view/"]
-    subgraph list_junior_drivers["list_junior_drivers/"]
-    end
-    subgraph driver_search["driver_search/"]
-    end
-    subgraph edit_runs["edit_runs/"]
-      subgraph edit_run["edit_run/{Driver ID}-{Run Number}-{Course}/"]
-      end
-    end
-    subgraph add_driver["add_driver/"]
-      subgraph Caregiver["0/"]
-      end
-      subgraph Junior["1/"]
-      end
-    end
-  end
-  subgraph Public["public_view/"]
-    subgraph list_courses["list_courses/"]
-    end
-    subgraph drivers_run_details["drivers_run_details/"]
-      subgraph DriverID["{Driver ID}/"]
-      end
-    end
-    subgraph list_drivers["list_drivers/"]
-    end
-    subgraph overall_results["overall_results/"]
-    end
-    subgraph show_graph["show_graph/"]
-    end
-  end
-  Root --> Admin
-  Root --> Error
-  Admin --> list_junior_drivers
-  Admin --> driver_search
-  Admin --> edit_runs
-  edit_runs --> edit_run
-  Admin --> add_driver
-  add_driver --> Caregiver
-  add_driver --> Junior
-  list_drivers --> drivers_run_details
-  Root --> Public
-  Public --> list_courses
-  Public --> drivers_run_details
-  drivers_run_details --> DriverID
-  Public --> overall_results
-  Public --> show_graph
+graph TD;
+    root["/"];
+    genericErrorHandlingPage["Generic Error Handling Page"];
+    adminView["admin_view/"];
+    listJuniorDrivers["list_junior_drivers/"];
+    driverSearch["driver_search/"];
+    editRuns["edit_runs/"];
+    addDriver["add_driver/"];
+    caregiver["0/"];
+    editRun["edit_run/{Driver ID}-{Run Number}-{Course}/"];
+    driverID["{Driver ID}/"];
+    junior["1/"];
+    publicView["public_view/"];
+    listCourses["list_courses/"];
+    driversRunDetails["drivers_run_details/"];
+    listDrivers["list_drivers/"];
+    overallResults["overall_results/"];
+    showGraph["show_graph/"];
+
+    root --> adminView;
+    root --> publicView;
+    root --> genericErrorHandlingPage;
+
+
+    adminView --> listJuniorDrivers;
+    adminView --> driverSearch;
+    adminView --> editRuns;
+    adminView --> addDriver;
+
+    editRuns --> editRun;
+
+    addDriver --> caregiver;
+    addDriver --> junior;
+
+
+    publicView --> listCourses;
+    publicView --> driversRunDetails;
+    publicView --> overallResults;
+    publicView --> listDrivers;
+    publicView --> showGraph;
+
+    listDrivers --> driversRunDetails;
+
+    driversRunDetails --> driverID;
 ```
 ## Routes
 - /: Root
