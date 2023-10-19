@@ -1,0 +1,14 @@
+<!-- TODO: Describe what does this file do and how -->
+<!-- TODO: Renaming to base_admin etc. -->
+{% extends "adminview.html" %}
+
+{% block content %}
+<h2>How old is the new driver?</h2>
+<div class="alert alert-info" role="alert">
+    Age between 12-25 is considered a "Junior Driver."
+</div>
+<form method="post" action="{{ url_for('adddriver') }}">
+    <button type="button" class="btn btn-primary" onclick="window.location.href='{{ url_for('adddriver2', junior=0) }}'">Add Regular Driver</button>
+    <button type="button" class="btn btn-primary" onclick="window.location.href='{{ url_for('adddriver2', junior=1) }}'">Add Junior Driver</button>
+</form>
+{% endblock %}

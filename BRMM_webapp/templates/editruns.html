@@ -1,14 +1,75 @@
 <!-- TODO: Describe what does this file do and how -->
 <!-- TODO: filename reformat with _. -->
-<!-- TODO: Implementation -->
-
 {% extends "adminview.html" %}
+
 {% block content %}
-<!-- driver_list is the variable passed in containing the list of drivers -->
-<!-- Add code to display a list of drivers -->
+<h2>Edit Runs</h2>
 
-<h2>editruns</h2>
+<form method="post" action="{{ url_for('editruns') }}">
+    <div class="form-group">
+        <label for="driverSelect">Select a Driver:</label>
+        <select class="form-control" id="driverSelect" name="selected_driver">
+            <option value="">Select a driver...</option>
+            {% for driver in driver_list %}
+                <option value="{{ driver[0] }}" {% if selected_driver == driver[0] %}selected{% endif %}>
+                    {{ driver[1] }} {{ driver[2] }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
 
-<p>TODO.</p>
+    <div class="form-group">
+        <label for="courseSelect">Select a Course:</label>
+        <select class="form-control" id="courseSelect" name="selected_course">
+            <option value="">Select a course...</option>
+            {% for course in course_list %}
+                <option value="{{ course[0] }}" {% if selected_course == course[0] %}selected{% endif %}>
+                    {{ course[0] }} - {{course[1] }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
 
-{% endblock %}
+    <button type="submit" class="btn btn-primary">View Runs</button>
+
+</form>
+
+{% if result_list %}
+    <h3>Run Details</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Driver ID</th>
+                <th>Driver Name</th>
+                <th>Course Name</th>
+                <th>Run Number</th>
+                <th>Model</th>
+                <th>Drive Class</th>
+                <th>Cones</th>
+                <th>WD</th>
+                <th>Seconds</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for run in result_list %}
+                <tr>
+                    <td>{{ run[0] }}</td>
+                    <td>{{ run[1] }} {{ run[2] }}</td>
+                    <td>{{ run[3] }} - {{ run[4] }}</td>
+                    <td>{{ run[5] }}</td>
+                    <td>{{ run[6] }}</td>
+                    <td>{{ run[7] }}</td>
+                    <td>{{ run[8] }}</td>
+                    <td>{{ run[9] }}</td>
+                    <td>{{ run[10] }}</td>
+                    <td>
+                        <a href="{{ url_for('editrun', driver_id=run[0], course_id=run[3], run_num=run[5]) }}" class="btn btn-primary">Edit</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+</{% endblock %}
