@@ -1,6 +1,5 @@
 <!-- TODO: Describe what does this file do and how -->
 <!-- TODO: Renaming to base_admin etc. -->
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,20 +11,18 @@
 
     <body>
         <nav>
-            <h1>Bankside Rakaia Motorkhana Mavens - Competition event</h1>
+            <h1>Bankside Rakaia Motorkhana Mavens - Competition event - Admin view</h1>
             <ul>
-                <li><a href="{{ url_for('listcourses') }}">List Courses</a></li>
-                <li><a href="{{ url_for('driversrundetails') }}">Driver's run details</a></li>
-                <li><a href="{{ url_for('listdrivers') }}">List Drivers</a></li>
-                <li><a href="{{ url_for('overallresults') }}">Overall results</a></li>
-                <li><a href="{{ url_for('showgraph') }}">Bar Graph</a></li>
+                <li><a href="{{ url_for('listjuniordrivers') }}">List Junior Drivers</a></li>
+                <li><a href="{{ url_for('driversearch') }}">Driver Search</a></li>
+                <li><a href="{{ url_for('editruns') }}">Edit Runs</a></li>
             </ul>
         </nav>
 
         <!-- Bootstrap's utility classes for positioning the button -->
         <div class="position-absolute top-0 end-0 m-3">
-            <!-- Add a button to open admin view in a new tab -->
-            <a href="{{ url_for('adminview') }}" class="btn btn-secondary">Admin View</a>
+            <!-- Change the href to "/" to navigate back to the home page -->
+            <a href="{{ url_for('home') }}" class="btn btn-secondary">Public View</a>
         </div>
 
         <section class="content">

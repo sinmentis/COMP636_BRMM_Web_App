@@ -1,0 +1,59 @@
+<!-- TODO: Describe what does this file do and how -->
+<!-- TODO: filename reformat with _. -->
+{% extends "base.html" %}
+{% block content %}
+<!-- driver_list is the variable passed in containing the list of drivers -->
+
+<h2>Driver List Detail</h2>
+
+<!-- Form to select a driver -->
+<form method="post" action="{{ url_for('driversrundetails') }}">
+    <div class="form-group">
+        <label for="driverSelect">Select a Driver:</label>
+        <select class="form-control" id="driverSelect" name="selected_driver">
+            <option value="">Select a driver...</option>
+            {% for driver in driver_list %}
+                <option value="{{ driver[0] }}" {% if selected_driver and selected_driver[0] == driver[0] %}selected{% endif %}>
+                    {{ driver[1] }} {{ driver[2] }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">View Details</button>
+    <!-- Include a hidden field to pass the selected driver's ID -->
+    {% if selected_driver %}
+        <input type="hidden" name="driver_id" value="{{ selected_driver[0] }}">
+    {% endif %}
+</form>
+
+
+{% if selected_driver %}
+<h2>Run details on driver: {{ selected_driver[0][0] }} - {{ selected_driver[0][1] }} {{ selected_driver[0][2] }}</h2>
+<!-- Display driver's run details here -->
+<div class="table-responsive mt-4">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Course Name</th>
+                <th>Run Number</th>
+                <th>Car Model</th>
+                <th>Drive Class</th>
+                <th>Cones Hit</th>
+                <th>Wrong Direction</th>
+                <th>Seconds</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for run in selected_driver %}
+                <tr>
+                    {% for field in run[3:] %}
+                        <td class="align-middle">{{ field }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% endblock %}
