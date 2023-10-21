@@ -343,8 +343,8 @@ def drivers_run_details_page(driver_id):
     connection.execute("SELECT * FROM driver;")
     driver_list = connection.fetchall()
     # Fetch driver's details based on the driver_id parameter
-    connection.execute(f"SELECT md.driver_id, md.surname, md.first_name, ms.name, mr.run_num, mc.model, "
-                       f"mc.drive_class, mr.cones, mr.wd, mr.seconds FROM driver as md "
+    connection.execute(f"SELECT md.driver_id, md.surname, md.first_name, mc.model, mc.drive_class, "
+                       f"ms.name, mr.run_num, mr.cones, mr.wd, mr.seconds FROM driver as md "
                        f"LEFT JOIN car as mc ON mc.car_num = md.car "
                        f"LEFT JOIN run as mr ON mr.dr_id = md.driver_id "
                        f"LEFT JOIN course as ms ON mr.crs_id = ms.course_id "

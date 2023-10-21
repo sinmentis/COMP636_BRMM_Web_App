@@ -1,72 +1,110 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-lg-8 offset-lg-2">
-                <!-- Title for the page -->
-                <h2 class="display-4 text-center mb-4">Driver List Detail</h2>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <!-- Title for the page -->
+            <h2 class="display-4 text-center mb-4">Driver List Detail</h2>
 
-                <!-- Form to select a driver and view their details -->
-                <form method="post" action="{{ url_for('drivers_run_details') }}">
-                    <div class="form-group">
-                        <label for="driverSelect">Select a Driver:</label>
+            <!-- Form to select a driver and view their details -->
+            <form method="post" action="{{ url_for('drivers_run_details') }}">
+                <div class="form-group">
+                    <label for="driverSelect">Select a Driver:</label>
 
-                        <!-- Dropdown to select a driver from the list -->
-                        <select class="form-control" id="driverSelect" name="selected_driver">
-                            <option value="">Select a driver...</option>
+                    <!-- Dropdown to select a driver from the list -->
+                    <select class="form-control" id="driverSelect" name="selected_driver">
+                        <option value="">Select a driver...</option>
 
-                            <!-- Loop through the list of drivers -->
-                            {% for driver in driver_list %}
-                                <!-- Display driver's full name and select the previously selected driver, if any -->
-                                <option value="{{ driver[0] }}" {% if selected_driver and selected_driver[0] == driver[0] %}selected{% endif %}>
-                                    {{ driver[1] }} {{ driver[2] }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">View Details</button>
+                        <!-- Loop through the list of drivers -->
+                        {% for driver in driver_list %}
+                        <!-- Display driver's full name and select the previously selected driver, if any -->
+                        <option value="{{ driver[0] }}" {% if selected_driver and selected_driver[0]== driver[0]
+                                %}selected{% endif %}>
+                            {{ driver[1] }} {{ driver[2] }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">View Details</button>
 
-                    <!-- If a driver is selected, send their ID for processing -->
-                    {% if selected_driver %}
-                        <input type="hidden" name="driver_id" value="{{ selected_driver[0][0] }}">
-                    {% endif %}
-                </form>
-
-                <!-- If a driver is selected, display their run details -->
+                <!-- If a driver is selected, send their ID for processing -->
                 {% if selected_driver %}
-                    <h2 class="mt-4">Run details on driver: {{ selected_driver[0][0] }} - {{ selected_driver[0][1] }} {{ selected_driver[0][2] }}</h2>
-                    <div class="table-responsive mt-4">
-                        <!-- Table to display run details with Bootstrap styles -->
-                        <table class="table table-bordered table-striped">
-                            <!-- Table header with a dark background -->
-                            <thead class="thead-dark">
-                                <tr>
-                                    <!-- Column headers for run details -->
-                                    <th>Course Name</th>
-                                    <th>Run Number</th>
-                                    <th>Car Model</th>
-                                    <th>Drive Class</th>
-                                    <th>Cones Hit</th>
-                                    <th>Wrong Direction</th>
-                                    <th>Seconds</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Loop through the selected driver's run details -->
-                                {% for run in selected_driver %}
-                                    <tr>
-                                        <!-- Display each field of the run -->
-                                        {% for field in run[3:] %}
-                                            <td class="align-middle">{{ field }}</td>
-                                        {% endfor %}
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                <input type="hidden" name="driver_id" value="{{ selected_driver[0][0] }}">
                 {% endif %}
+            </form>
+
+            {% if selected_driver %}
+            <!-- Display run details in a more visually appealing format. -->
+            <div class="card mt-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Run details on {{ selected_driver[0][1] }} {{ selected_driver[0][2] }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>User ID:</strong> {{ selected_driver[0][0] }}</p>
+                            <p><strong>Model:</strong> {{ selected_driver[0][3] }}</p>
+                            <p><strong>Drive Class:</strong> {{ selected_driver[0][4] }}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- If a driver is selected, display their run details -->
+            <div class="table-responsive mt-4">
+                <table class="table table-bordered table-striped">
+                    <!-- Table header with a dark background -->
+                    <thead class="thead-dark">
+                    <tr>
+                        <!-- Column headers for run details -->
+                        <th>Course Name</th>
+                        <th>Run Number</th>
+                        <th>Cones Hit</th>
+                        <th>Wrong Direction</th>
+                        <th>Seconds</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Loop through the selected driver's run details -->
+                    {% for run in selected_driver %}
+                    <tr>
+                        <!-- Display each field of the run -->
+                        <td class="align-middle">{{ run[5] }}</td>
+                        {# Course Name #}
+                        <td class="align-middle">{{ run[6] }}</td>
+                        {# Run Number #}
+                        <td class="align-middle">
+                            {% if run[7] == 1 %}
+                            True
+                            {% elif run[7] == 0 %}
+                            False
+                            {% else %}
+                            {{ run[7] }}
+                            {% endif %}
+                        </td>
+                        {# Cones Hit #}
+                        <td class="align-middle">
+                            {% if run[8] == 1 %}
+                            True
+                            {% elif run[8] == 0 %}
+                            False
+                            {% else %}
+                            {{ run[8] }}
+                            {% endif %}
+                        </td>
+                        {# Wrong Direction (WD) #}
+                        <td class="align-middle">{{ run[9] }}</td>
+                        {# Seconds #}
+                    </tr>
+                    {% endfor %}
+
+
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
         </div>
     </div>
+</div>
 {% endblock %}
